@@ -23,5 +23,5 @@ Design your own segment display with this Web App. Choose between 7, 14, or 16 s
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/SegmentDisplay.git
+   git clone https://github.com/Emmanuelxs13/SegmentDisplay.git
    cd SegmentDisplay
