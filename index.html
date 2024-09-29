@@ -1,28 +1,53 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Segment Display</title>
+    <!-- Metadatos del documento -->
+    <meta charset="UTF-8"> <!-- Establece la codificación de caracteres en UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configura el ancho y escala de la página para dispositivos móviles -->
+    <title>Segment Display</title> <!-- Título de la página -->
 
+    <!-- Comentario condicional para navegadores IE -->
     <!-- [if IE] -->
-    <!-- <script type="text/javascript" src="excanvas.js"></script>
-    <![endif]-->
+    <!-- <script type="text/javascript" src="Assets/JS/excanvas.js"></script> --> <!-- Carga excanvas.js para compatibilidad con IE -->
+    <!-- <![endif] -->
 
-    <!-- Enlace al script del modelo del display -->
-    <script type="text/javascript" src="Assets/JS/segment-display.js"></script>
-    <!-- Enlace al controlador del display -->
-    <script type="text/javascript" src="Assets/JS/displayController.js" defer></script>
+    <!-- Cargar el archivo config.js que define la ruta base con la variable _DIR_ -->
+    <script type="text/javascript" src="Assets/JS/config.js"></script>
+
+    <script type="text/javascript">
+        // Crear el elemento de script para cargar dinámicamente segment-display.js
+        const scriptSegment = document.createElement('script');
+        // Asignar la ruta al archivo segment-display.js usando la constante _DIR_
+        scriptSegment.src = _DIR_ + 'Js/segment-display.js';
+        // Agregar el script de segment-display.js al head del documento
+        document.head.appendChild(scriptSegment);
+
+        // Crear el elemento de script para cargar dinámicamente displayController.js
+        const scriptController = document.createElement('script');
+        // Asignar la ruta al archivo displayController.js usando la constante _DIR_
+        scriptController.src = _DIR_ + 'Js/displayController.js';
+        // Usar defer para asegurar que el script se ejecute después de que el HTML haya sido completamente cargado
+        scriptController.defer = true;
+        // Agregar el script de displayController.js al head del documento
+        document.head.appendChild(scriptController);
+    </script>
 </head>
 
 <body>
+    <!-- Contenedor principal con estilo de relleno -->
     <div style="padding: 50px 100px">
-        <div style="width: 216px; height: 126px; position: relative; background: transparent url(plexiglas.png) no-repeat top left">
+        <!-- Div que contiene el fondo de plexiglás y el canvas -->
+        <div style="width: 216px; height: 126px; position: relative; background: transparent url('Assets/Images/plexiglas.png') no-repeat top left">
+            <!-- Posicionamiento del canvas donde se dibujará el display -->
             <div style="position: absolute; left: 38px; top: 33px; width: 120px; height: 34px">
-                <canvas id="display" width="120" height="34"></canvas> <!-- Canvas donde se dibuja el display -->
+                <!-- Elemento canvas para el display de segmentos -->
+                <canvas id="display" width="120" height="34"></canvas> <!-- El canvas donde se dibuja el display de segmentos -->
             </div>
         </div>
-        <p>Documentation: <a href="http://www.3quarks.com/de/Segmentanzeige">http://www.3quarks.com/de/Segmentanzeige</a></p>
+        <!-- Enlace a la documentación del display de segmentos -->
+        <p>Documentación: <a href="http://www.3quarks.com/de/Segmentanzeige">http://www.3quarks.com/de/Segmentanzeige</a></p>
     </div>
 </body>
+
 </html>
