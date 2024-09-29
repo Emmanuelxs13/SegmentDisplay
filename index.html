@@ -1,53 +1,80 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <!-- Metadatos del documento -->
-    <meta charset="UTF-8"> <!-- Establece la codificación de caracteres en UTF-8 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configura el ancho y escala de la página para dispositivos móviles -->
-    <title>Segment Display</title> <!-- Título de la página -->
+    <meta charset="UTF-8"> <!-- Establece la codificación de caracteres a UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configuración del viewport para responsive design -->
+    <title>SegmentDisplay</title> <!-- Título de la página -->
 
-    <!-- Comentario condicional para navegadores IE -->
-    <!-- [if IE] -->
-    <!-- <script type="text/javascript" src="Assets/JS/excanvas.js"></script> --> <!-- Carga excanvas.js para compatibilidad con IE -->
-    <!-- <![endif] -->
+    <!-- JavaScript para cargar los recursos dinámicamente desde config.js -->
+    <script src="Assets/Js/config.js"></script> <!-- Carga el archivo de configuración que contiene las rutas base -->
 
-    <!-- Cargar el archivo config.js que define la ruta base con la variable _DIR_ -->
-    <script type="text/javascript" src="Assets/JS/config.js"></script>
+    <script>
+        // Cargar CSS dinámicamente usando la ruta base definida en config.js
+        const link = document.createElement('link'); // Crea un nuevo elemento <link> para estilos CSS
+        link.rel = 'stylesheet'; // Define el atributo rel para que sea un stylesheet
+        link.href = _DIR_ + 'Assets/css/styles.css'; // Establece la ruta del CSS usando la constante _DIR_
+        document.head.appendChild(link); // Añade el elemento <link> al <head> del documento
 
-    <script type="text/javascript">
-        // Crear el elemento de script para cargar dinámicamente segment-display.js
-        const scriptSegment = document.createElement('script');
-        // Asignar la ruta al archivo segment-display.js usando la constante _DIR_
-        scriptSegment.src = _DIR_ + 'Js/segment-display.js';
-        // Agregar el script de segment-display.js al head del documento
-        document.head.appendChild(scriptSegment);
+        // Cargar los scripts JS dinámicamente
+        const scriptSegment = document.createElement('script'); // Crea un nuevo elemento <script> para el segmento display
+        scriptSegment.src = _DIR_ + 'Assets/Js/segment-display.js'; // Establece la ruta del script usando _DIR_
+        document.head.appendChild(scriptSegment); // Añade el script al <head>
 
-        // Crear el elemento de script para cargar dinámicamente displayController.js
-        const scriptController = document.createElement('script');
-        // Asignar la ruta al archivo displayController.js usando la constante _DIR_
-        scriptController.src = _DIR_ + 'Js/displayController.js';
-        // Usar defer para asegurar que el script se ejecute después de que el HTML haya sido completamente cargado
-        scriptController.defer = true;
-        // Agregar el script de displayController.js al head del documento
-        document.head.appendChild(scriptController);
+        const scriptController = document.createElement('script'); // Crea otro <script> para el controlador
+        scriptController.src = _DIR_ + 'Controllers/displayController.js'; // Establece la ruta del controlador usando _DIR_
+        document.head.appendChild(scriptController); // Añade el script al <head>
+    </script>
+
+    <!-- Script para el display de segmentos -->
+    <script>
+        // Lógica de configuración del display
+        var display = new SegmentDisplay("display"); // Inicializa el objeto SegmentDisplay con el ID del canvas
+        display.pattern         = "##:##:##"; // Define el patrón del display
+        display.cornerType      = 2; // Establece el tipo de esquina del display
+        display.displayType     = 7; // Establece el tipo de display
+        display.displayAngle    = 9; // Establece el ángulo del display
+        display.digitHeight     = 20; // Altura de los dígitos en el display
+        display.digitWidth      = 12; // Ancho de los dígitos en el display
+        display.digitDistance   = 2; // Espaciado entre los dígitos
+        display.segmentWidth    = 3; // Ancho de los segmentos
+        display.segmentDistance = 0.5; // Espaciado entre los segmentos
+        display.colorOn         = "rgba(0, 0, 0, 0.9)"; // Color de los segmentos encendidos
+        display.colorOff        = "rgba(0, 0, 0, 0.1)"; // Color de los segmentos apagados
+
+        // Función para animar el display
+        function animate() {
+            var time    = new Date(); // Obtiene la fecha y hora actual
+            var hours   = time.getHours(); // Obtiene las horas
+            var minutes = time.getMinutes(); // Obtiene los minutos
+            var seconds = time.getSeconds(); // Obtiene los segundos
+            // Formatea la cadena de tiempo para mostrar en el display
+            var value   = ((hours < 10) ? ' ' : '') + hours
+                        + ':' + ((minutes < 10) ? '0' : '') + minutes
+                        + ':' + ((seconds < 10) ? '0' : '') + seconds;
+            display.setValue(value); // Actualiza el valor del display
+            window.setTimeout('animate()', 100); // Llama a la función de animación cada 100ms
+        }
+
+        // Iniciar la animación
+        animate(); // Llama a la función animate para iniciar la actualización del display
     </script>
 </head>
-
 <body>
-    <!-- Contenedor principal con estilo de relleno -->
     <div style="padding: 50px 100px">
-        <!-- Div que contiene el fondo de plexiglás y el canvas -->
-        <div style="width: 216px; height: 126px; position: relative; background: transparent url('Assets/Images/plexiglas.png') no-repeat top left">
-            <!-- Posicionamiento del canvas donde se dibujará el display -->
+        <!-- Imagen de fondo (plexiglas.png) y el display segmentado -->
+        <div style="width: 216px; height: 126px; position: relative; background: transparent url('Assets/Images/plexiglas.png') no-repeat top left" id="displayContainer">
             <div style="position: absolute; left: 38px; top: 33px; width: 120px; height: 34px">
-                <!-- Elemento canvas para el display de segmentos -->
-                <canvas id="display" width="120" height="34"></canvas> <!-- El canvas donde se dibuja el display de segmentos -->
+                <canvas id="display" width="120" height="34"></canvas> <!-- Canvas donde se dibuja el display -->
             </div>
         </div>
-        <!-- Enlace a la documentación del display de segmentos -->
-        <p>Documentación: <a href="http://www.3quarks.com/de/Segmentanzeige">http://www.3quarks.com/de/Segmentanzeige</a></p>
     </div>
-</body>
 
+    <p>Documentación: <a href="http://www.3quarks.com/de/Segmentanzeige">http://www.3quarks.com/de/Segmentanzeige</a></p> <!-- Enlace a la documentación -->
+
+    <!-- JavaScript para cargar la imagen del fondo dinámicamente -->
+    <script>
+        const displayContainer = document.getElementById('displayContainer'); // Obtiene el contenedor del display
+        displayContainer.style.backgroundImage = 'url(' + _DIR_ + 'Images/plexiglas.png)'; // Establece la imagen de fondo usando la ruta base
+    </script>
+</body>
 </html>
