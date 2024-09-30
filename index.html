@@ -1,80 +1,257 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8"> <!-- Establece la codificación de caracteres a UTF-8 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configuración del viewport para responsive design -->
-    <title>SegmentDisplay</title> <!-- Título de la página -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SegmentDisplay - Reloj con Control de Geometría y Color</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin: 0;
+      padding: 20px;
+    }
 
-    <!-- JavaScript para cargar los recursos dinámicamente desde config.js -->
-    <script src="Assets/Js/config.js"></script> <!-- Carga el archivo de configuración que contiene las rutas base -->
+    /* Tarjeta de configuración */
+    .card {
+      background-color: #f8f9fa;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      padding: 20px;
+      width: 300px;
+      margin-right: 20px;
+    }
 
-    <script>
-        // Cargar CSS dinámicamente usando la ruta base definida en config.js
-        const link = document.createElement('link'); // Crea un nuevo elemento <link> para estilos CSS
-        link.rel = 'stylesheet'; // Define el atributo rel para que sea un stylesheet
-        link.href = _DIR_ + 'Assets/css/styles.css'; // Establece la ruta del CSS usando la constante _DIR_
-        document.head.appendChild(link); // Añade el elemento <link> al <head> del documento
+    h3 {
+      margin-top: 0;
+    }
 
-        // Cargar los scripts JS dinámicamente
-        const scriptSegment = document.createElement('script'); // Crea un nuevo elemento <script> para el segmento display
-        scriptSegment.src = _DIR_ + 'Assets/Js/segment-display.js'; // Establece la ruta del script usando _DIR_
-        document.head.appendChild(scriptSegment); // Añade el script al <head>
+    label {
+      font-size: 14px;
+      margin-bottom: 5px;
+      display: block;
+    }
 
-        const scriptController = document.createElement('script'); // Crea otro <script> para el controlador
-        scriptController.src = _DIR_ + 'Controllers/displayController.js'; // Establece la ruta del controlador usando _DIR_
-        document.head.appendChild(scriptController); // Añade el script al <head>
-    </script>
+    input[type="range"] {
+      width: 100%;
+    }
 
-    <!-- Script para el display de segmentos -->
-    <script>
-        // Lógica de configuración del display
-        var display = new SegmentDisplay("display"); // Inicializa el objeto SegmentDisplay con el ID del canvas
-        display.pattern         = "##:##:##"; // Define el patrón del display
-        display.cornerType      = 2; // Establece el tipo de esquina del display
-        display.displayType     = 7; // Establece el tipo de display
-        display.displayAngle    = 9; // Establece el ángulo del display
-        display.digitHeight     = 20; // Altura de los dígitos en el display
-        display.digitWidth      = 12; // Ancho de los dígitos en el display
-        display.digitDistance   = 2; // Espaciado entre los dígitos
-        display.segmentWidth    = 3; // Ancho de los segmentos
-        display.segmentDistance = 0.5; // Espaciado entre los segmentos
-        display.colorOn         = "rgba(0, 0, 0, 0.9)"; // Color de los segmentos encendidos
-        display.colorOff        = "rgba(0, 0, 0, 0.1)"; // Color de los segmentos apagados
+    input[type="color"] {
+      width: 100%;
+      height: 38px;
+      padding: 0;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
-        // Función para animar el display
-        function animate() {
-            var time    = new Date(); // Obtiene la fecha y hora actual
-            var hours   = time.getHours(); // Obtiene las horas
-            var minutes = time.getMinutes(); // Obtiene los minutos
-            var seconds = time.getSeconds(); // Obtiene los segundos
-            // Formatea la cadena de tiempo para mostrar en el display
-            var value   = ((hours < 10) ? ' ' : '') + hours
-                        + ':' + ((minutes < 10) ? '0' : '') + minutes
-                        + ':' + ((seconds < 10) ? '0' : '') + seconds;
-            display.setValue(value); // Actualiza el valor del display
-            window.setTimeout('animate()', 100); // Llama a la función de animación cada 100ms
-        }
+    #controls {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
 
-        // Iniciar la animación
-        animate(); // Llama a la función animate para iniciar la actualización del display
-    </script>
+    button {
+      padding: 8px 12px;
+      font-size: 14px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Canvas */
+    canvas {
+      border: 1px solid black;
+      width: 100%;
+      height: auto;
+    }
+
+    /* Contenedor del reloj */
+    #clock-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #clock {
+      width: 260px;
+      height: 140px;
+    }
+
+    #current-time {
+      font-size: 16px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
+
 <body>
-    <div style="padding: 50px 100px">
-        <!-- Imagen de fondo (plexiglas.png) y el display segmentado -->
-        <div style="width: 216px; height: 126px; position: relative; background: transparent url('Assets/Images/plexiglas.png') no-repeat top left" id="displayContainer">
-            <div style="position: absolute; left: 38px; top: 33px; width: 120px; height: 34px">
-                <canvas id="display" width="120" height="34"></canvas> <!-- Canvas donde se dibuja el display -->
-            </div>
-        </div>
+  <!-- Tarjeta de configuración -->
+  <div class="card">
+    <h3>Configuración de Geometría</h3>
+    <label for="digitHeightRange">Altura del dígito: <span id="digitHeightValue">20</span></label>
+    <input type="range" id="digitHeightRange" min="10" max="50" value="20">
+
+    <label for="digitWidthRange">Ancho del dígito: <span id="digitWidthValue">14</span></label>
+    <input type="range" id="digitWidthRange" min="8" max="30" value="14">
+
+    <label for="digitDistanceRange">Distancia entre dígitos: <span id="digitDistanceValue">2.5</span></label>
+    <input type="range" id="digitDistanceRange" min="0" max="10" step="0.1" value="2.5">
+
+    <label for="segmentWidthRange">Ancho del segmento: <span id="segmentWidthValue">2</span></label>
+    <input type="range" id="segmentWidthRange" min="1" max="5" step="0.1" value="2">
+
+    <label for="segmentDistanceRange">Distancia del segmento: <span id="segmentDistanceValue">0.3</span></label>
+    <input type="range" id="segmentDistanceRange" min="0" max="2" step="0.1" value="0.3">
+
+    <h3>Colores</h3>
+    <label for="colorOn">Color del segmento encendido:</label>
+    <input type="color" id="colorOn" value="#e95d0f">
+
+    <label for="colorOff">Color del segmento apagado:</label>
+    <input type="color" id="colorOff" value="#4b1e05">
+
+    <label for="bgColor">Color de fondo:</label>
+    <input type="color" id="bgColor" value="#ffffff">
+
+    <div id="controls">
+      <button id="reset-btn">Restablecer valores</button>
+      <button id="toggle-btn">Cambiar tipo</button>
     </div>
+  </div>
 
-    <p>Documentación: <a href="http://www.3quarks.com/de/Segmentanzeige">http://www.3quarks.com/de/Segmentanzeige</a></p> <!-- Enlace a la documentación -->
+  <!-- Contenedor del reloj -->
+  <div id="clock-container">
+    <canvas id="clock" width="260" height="140">Lamentablemente su navegador no es compatible.</canvas>
+    <p>Hora local de Colombia: <span id="current-time">--:--:--</span></p>
+  </div>
 
-    <!-- JavaScript para cargar la imagen del fondo dinámicamente -->
-    <script>
-        const displayContainer = document.getElementById('displayContainer'); // Obtiene el contenedor del display
-        displayContainer.style.backgroundImage = 'url(' + _DIR_ + 'Images/plexiglas.png)'; // Establece la imagen de fondo usando la ruta base
-    </script>
+  <script type="text/javascript" src="segment-display.js"></script>
+  <script>
+    // Inicialización del display
+    const display = new SegmentDisplay("clock");
+    let currentSegmentType = 7;
+
+    // Configuraciones iniciales
+    function initDisplay() {
+      display.pattern = "##:##:##";
+      display.displayAngle = 6;
+      display.digitHeight = parseFloat(document.getElementById('digitHeightRange').value);
+      display.digitWidth = parseFloat(document.getElementById('digitWidthRange').value);
+      display.digitDistance = parseFloat(document.getElementById('digitDistanceRange').value);
+      display.segmentWidth = parseFloat(document.getElementById('segmentWidthRange').value);
+      display.segmentDistance = parseFloat(document.getElementById('segmentDistanceRange').value);
+      display.segmentCount = currentSegmentType;
+      display.cornerType = 3;
+
+      // Asignar colores
+      display.colorOn = document.getElementById('colorOn').value;
+      display.colorOff = document.getElementById('colorOff').value;
+
+      // Cambiar color de fondo
+      document.getElementById('clock').style.backgroundColor = document.getElementById('bgColor').value;
+
+      display.draw();
+    }
+
+    // Actualización de valores
+    function updateDisplay() {
+      const colombiaTime = new Intl.DateTimeFormat('es-CO', {
+        timeZone: 'America/Bogota',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }).format(new Date());
+
+      document.getElementById('current-time').textContent = colombiaTime;
+
+      const [hours, minutes, seconds] = colombiaTime.split(':');
+      const value = `${hours}:${minutes}:${seconds}`;
+      display.setValue(value);
+    }
+
+    // Listeners para los sliders
+    document.getElementById('digitHeightRange').addEventListener('input', (e) => {
+      document.getElementById('digitHeightValue').textContent = e.target.value;
+      display.digitHeight = parseFloat(e.target.value);
+      display.draw();
+    });
+
+    document.getElementById('digitWidthRange').addEventListener('input', (e) => {
+      document.getElementById('digitWidthValue').textContent = e.target.value;
+      display.digitWidth = parseFloat(e.target.value);
+      display.draw();
+    });
+
+    document.getElementById('digitDistanceRange').addEventListener('input', (e) => {
+      document.getElementById('digitDistanceValue').textContent = e.target.value;
+      display.digitDistance = parseFloat(e.target.value);
+      display.draw();
+    });
+
+    document.getElementById('segmentWidthRange').addEventListener('input', (e) => {
+      document.getElementById('segmentWidthValue').textContent = e.target.value;
+      display.segmentWidth = parseFloat(e.target.value);
+      display.draw();
+    });
+
+    document.getElementById('segmentDistanceRange').addEventListener('input', (e) => {
+      document.getElementById('segmentDistanceValue').textContent = e.target.value;
+      display.segmentDistance = parseFloat(e.target.value);
+      display.draw();
+    });
+
+    // Listeners para los colores
+    document.getElementById('colorOn').addEventListener('input', () => {
+      display.colorOn = document.getElementById('colorOn').value;
+      display.draw();
+    });
+
+    document.getElementById('colorOff').addEventListener('input', () => {
+      display.colorOff = document.getElementById('colorOff').value;
+      display.draw();
+    });
+
+    document.getElementById('bgColor').addEventListener('input', () => {
+      document.getElementById('clock').style.backgroundColor = document.getElementById('bgColor').value;
+    });
+
+    // Botón de restablecer valores
+    document.getElementById('reset-btn').addEventListener('click', () => {
+      document.getElementById('digitHeightRange').value = 20;
+      document.getElementById('digitWidthRange').value = 14;
+      document.getElementById('digitDistanceRange').value = 2.5;
+      document.getElementById('segmentWidthRange').value = 2;
+      document.getElementById('segmentDistanceRange').value = 0.3;
+      document.getElementById('colorOn').value = "#e95d0f";
+      document.getElementById('colorOff').value = "#4b1e05";
+      document.getElementById('bgColor').value = "#ffffff";
+
+      initDisplay();
+    });
+
+    // Botón para cambiar tipo de segmentos
+    document.getElementById('toggle-btn').addEventListener('click', () => {
+      currentSegmentType = (currentSegmentType === 7) ? 14 : 7;
+      display.segmentCount = currentSegmentType;
+      display.draw();
+    });
+
+    // Inicializar y actualizar reloj
+    initDisplay();
+    setInterval(() => {
+      updateDisplay();
+    }, 1000);
+  </script>
 </body>
+
 </html>
