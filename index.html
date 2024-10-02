@@ -16,7 +16,7 @@
     }
 
     /* Tarjeta de configuración */
-    .card {
+    .card, .card-message {
       background-color: #f8f9fa;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       border-radius: 8px;
@@ -62,6 +62,7 @@
       color: white;
       border-radius: 4px;
       cursor: pointer;
+      margin-right: 5px; /* Espacio entre botones */
     }
 
     button:hover {
@@ -90,6 +91,16 @@
     #current-time {
       font-size: 16px;
       margin-top: 10px;
+    }
+
+    /* Estilo para las tarjetas generadas */
+    .movable-card {
+      position: absolute;
+      background-color: #e2e2e2;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      cursor: move;
     }
   </style>
 </head>
@@ -133,6 +144,13 @@
   <div id="clock-container">
     <canvas id="clock" width="260" height="140">Lamentablemente su navegador no es compatible.</canvas>
     <p>Hora local de Colombia: <span id="current-time">--:--:--</span></p>
+  </div>
+
+  <div class="card-message">
+    <h2 class="title-card">Ingrese el texto que desea imprimir</h2>
+    <textarea name="textarea" id="card-textarea"></textarea>
+    <button id="send-btn">Enviar</button>
+    <button id="delete-btn">Eliminar</button>
   </div>
 
   <script type="text/javascript" src="segment-display.js"></script>
@@ -244,6 +262,59 @@
       currentSegmentType = (currentSegmentType === 7) ? 14 : 7;
       display.segmentCount = currentSegmentType;
       display.draw();
+    });
+
+    // Funcionalidad para enviar texto y crear tarjetas
+    document.getElementById('send-btn').addEventListener('click', () => {
+      const text = document.getElementById('card-textarea').value;
+      if (text) {
+        createCard(text);
+        document.getElementById('card-textarea').value = ''; // Limpiar el textarea
+      }
+    });
+
+    // Crear una tarjeta en el canvas
+    function createCard(text) {
+      const card = document.createElement('div');
+      card.className = 'movable-card';
+      card.innerText = text;
+      document.body.appendChild(card);
+
+      // Posicionamiento inicial
+      card.style.left = Math.random() * (window.innerWidth - 300) + 'px'; // Posición aleatoria en X
+      card.style.top = Math.random() * (window.innerHeight - 200) + 'px'; // Posición aleatoria en Y
+
+      // Hacer que la tarjeta sea arrastrable
+      card.onmousedown = function (event) {
+        let shiftX = event.clientX - card.getBoundingClientRect().left;
+        let shiftY = event.clientY - card.getBoundingClientRect().top;
+
+        function moveAt(pageX, pageY) {
+          card.style.left = pageX - shiftX + 'px';
+          card.style.top = pageY - shiftY + 'px';
+        }
+
+        function onMouseMove(event) {
+          moveAt(event.pageX, event.pageY);
+        }
+
+        document.addEventListener('mousemove', onMouseMove);
+
+        card.onmouseup = function () {
+          document.removeEventListener('mousemove', onMouseMove);
+          card.onmouseup = null;
+        };
+      };
+
+      card.ondragstart = function () {
+        return false; // Evitar el comportamiento de arrastre predeterminado
+      };
+    }
+
+    // Botón de eliminar (puede ser implementado si es necesario)
+    document.getElementById('delete-btn').addEventListener('click', () => {
+      const cards = document.querySelectorAll('.movable-card');
+      cards.forEach(card => card.remove());
     });
 
     // Inicializar y actualizar reloj
