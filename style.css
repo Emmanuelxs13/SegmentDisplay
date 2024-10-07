@@ -1,0 +1,113 @@
+body {
+    font-family: Arial, sans-serif; /* Fuente para el cuerpo de la página */
+    display: flex; /* Utilizar flexbox para la disposición */
+    justify-content: space-between; /* Espacio entre los elementos en el eje principal */
+    align-items: flex-start; /* Alinear elementos al inicio del eje transversal */
+    margin: 0; /* Sin margen */
+    padding: 20px; /* Espaciado interior */
+}
+
+/* Estilos para las tarjetas de configuración y mensajes */
+.card, .card-message {
+    background-color: #f8f9fa; /* Color de fondo de las tarjetas */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra de las tarjetas */
+    border-radius: 8px; /* Bordes redondeados */
+    padding: 20px; /* Espaciado interior */
+    width: 300px; /* Ancho fijo */
+    margin-right: 20px; /* Espacio a la derecha */
+}
+
+h3 {
+    margin-top: 0; /* Sin margen superior en los encabezados h3 */
+}
+
+label {
+    font-size: 14px; /* Tamaño de fuente para etiquetas */
+    margin-bottom: 5px; /* Espaciado inferior */
+    display: block; /* Mostrar como bloque */
+}
+
+input[type="range"] {
+    width: 100%; /* Ancho completo para controles de rango */
+}
+
+input[type="color"] {
+    width: 100%; /* Ancho completo para selectores de color */
+    height: 38px; /* Altura del selector */
+    padding: 0; /* Sin padding */
+    border: none; /* Sin borde */
+    border-radius: 4px; /* Bordes redondeados */
+    cursor: pointer; /* Cambiar cursor a puntero */
+}
+
+#controls {
+    display: flex; /* Utilizar flexbox para los controles */
+    justify-content: space-between; /* Distribuir controles a los extremos */
+    margin-top: 20px; /* Espaciado superior */
+}
+
+button {
+    padding: 8px 12px; /* Espaciado interior de los botones */
+    font-size: 14px; /* Tamaño de fuente para los botones */
+    border: none; /* Sin borde */
+    background-color: #007bff; /* Color de fondo del botón */
+    color: white; /* Color del texto del botón */
+    border-radius: 4px; /* Bordes redondeados */
+    cursor: pointer; /* Cambiar cursor a puntero */
+    margin-left: 5px; /* Espacio a la izquierda de los botones */
+}
+
+button:hover {
+    background-color: #0056b3; /* Color de fondo al pasar el ratón */
+}
+
+/* Canvas */
+canvas {
+    border: 1px solid black; /* Borde para el canvas */
+    width: 100%; /* Ancho completo */
+    height: auto; /* Altura automática */
+}
+
+/* Contenedor del reloj */
+#clock-container {
+    display: flex; /* Utilizar flexbox */
+    flex-direction: column; /* Dirección de los elementos en columna */
+    align-items: center; /* Alinear al centro */
+}
+
+#clock {
+    width: 260px; /* Ancho fijo para el canvas del reloj */
+    height: 140px; /* Altura fija para el canvas del reloj */
+}
+
+#current-time {
+    font-size: 16px; /* Tamaño de fuente para la hora actual */
+    margin-top: 10px; /* Espacio superior */
+}
+
+/* Estilo para las tarjetas generadas */
+.movable-card {
+    position: absolute; /* Posicionamiento absoluto */
+    background-color: #e2e2e2; /* Color de fondo de las tarjetas generadas */
+    padding: 10px; /* Espaciado interior */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra de las tarjetas generadas */
+    cursor: move; /* Cambiar cursor a mover */
+}
+
+/* Estilos específicos para la tarjeta de mensajes */
+.card-message {
+    display: flex; /* Utilizar flexbox */
+    flex-direction: column; /* Disposición en columna */
+}
+
+textarea {
+    margin: 10px 0; /* Espaciado vertical */
+    resize: none; /* Evitar redimensionar si es necesario */
+}
+
+.button-container {
+    display: flex; /* Utilizar flexbox para los botones */
+    justify-content: space-between; /* Distribuir botones a los extremos */
+    margin-top: 10px; /* Espaciado superior */
+}

@@ -5,162 +5,85 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SegmentDisplay - Reloj con Control de Geometría y Color</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin: 0;
-      padding: 20px;
-    }
-
-    /* Tarjeta de configuración */
-    .card, .card-message {
-      background-color: #f8f9fa;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-      padding: 20px;
-      width: 300px;
-      margin-right: 20px;
-    }
-
-    h3 {
-      margin-top: 0;
-    }
-
-    label {
-      font-size: 14px;
-      margin-bottom: 5px;
-      display: block;
-    }
-
-    input[type="range"] {
-      width: 100%;
-    }
-
-    input[type="color"] {
-      width: 100%;
-      height: 38px;
-      padding: 0;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    #controls {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 20px;
-    }
-
-    button {
-      padding: 8px 12px;
-      font-size: 14px;
-      border: none;
-      background-color: #007bff;
-      color: white;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-right: 5px; /* Espacio entre botones */
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    /* Canvas */
-    canvas {
-      border: 1px solid black;
-      width: 100%;
-      height: auto;
-    }
-
-    /* Contenedor del reloj */
-    #clock-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    #clock {
-      width: 260px;
-      height: 140px;
-    }
-
-    #current-time {
-      font-size: 16px;
-      margin-top: 10px;
-    }
-
-    /* Estilo para las tarjetas generadas */
-    .movable-card {
-      position: absolute;
-      background-color: #e2e2e2;
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      cursor: move;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <!-- Tarjeta de configuración -->
   <div class="card">
     <h3>Configuración de Geometría</h3>
+    <!-- Controles para la altura del dígito -->
     <label for="digitHeightRange">Altura del dígito: <span id="digitHeightValue">20</span></label>
     <input type="range" id="digitHeightRange" min="10" max="50" value="20">
 
+    <!-- Controles para el ancho del dígito -->
     <label for="digitWidthRange">Ancho del dígito: <span id="digitWidthValue">14</span></label>
     <input type="range" id="digitWidthRange" min="8" max="30" value="14">
 
+    <!-- Controles para la distancia entre dígitos -->
     <label for="digitDistanceRange">Distancia entre dígitos: <span id="digitDistanceValue">2.5</span></label>
     <input type="range" id="digitDistanceRange" min="0" max="10" step="0.1" value="2.5">
 
+    <!-- Controles para el ancho del segmento -->
     <label for="segmentWidthRange">Ancho del segmento: <span id="segmentWidthValue">2</span></label>
     <input type="range" id="segmentWidthRange" min="1" max="5" step="0.1" value="2">
 
+    <!-- Controles para la distancia del segmento -->
     <label for="segmentDistanceRange">Distancia del segmento: <span id="segmentDistanceValue">0.3</span></label>
     <input type="range" id="segmentDistanceRange" min="0" max="2" step="0.1" value="0.3">
 
     <h3>Colores</h3>
+    <!-- Selector de color para el segmento encendido -->
     <label for="colorOn">Color del segmento encendido:</label>
     <input type="color" id="colorOn" value="#e95d0f">
 
+    <!-- Selector de color para el segmento apagado -->
     <label for="colorOff">Color del segmento apagado:</label>
     <input type="color" id="colorOff" value="#4b1e05">
 
+    <!-- Selector de color de fondo -->
     <label for="bgColor">Color de fondo:</label>
     <input type="color" id="bgColor" value="#000000">
 
     <div id="controls">
+      <!-- Botones de restablecer y cambiar tipo -->
       <button id="reset-btn">Restablecer valores</button>
       <button id="toggle-btn">Cambiar tipo</button>
     </div>
   </div>
 
-  <!-- Contenedor del reloj -->
+  <!-- Contenedores de los relojes -->
   <div id="clock-container">
-    <canvas id="clock" width="260" height="140">Lamentablemente su navegador no es compatible.</canvas>
-    <p>Hora local de Colombia: <span id="current-time">--:--:--</span></p>
+    <canvas id="clock1" width="260" height="140">Lamentablemente su navegador no es compatible.</canvas>
+    <p>Hora local de Colombia: <span id="current-time-1">--:--:--</span></p>
   </div>
 
+  <div id="clock-container">
+    <canvas id="clock2" width="260" height="140">Lamentablemente su navegador no es compatible.</canvas>
+    <p>Hora local de Colombia: <span id="current-time-2">--:--:--</span></p>
+  </div>
+
+  <!-- Tarjeta de mensajes -->
   <div class="card-message">
     <h2 class="title-card">Ingrese el texto que desea imprimir</h2>
+    <!-- Área de texto para ingresar el texto -->
     <textarea name="textarea" id="card-textarea"></textarea>
-    <button id="send-btn">Enviar</button>
-    <button id="delete-btn">Eliminar</button>
+    <div class="button-container">
+      <!-- Botón para enviar el texto -->
+      <button id="send-btn">Enviar</button>
+      <!-- Botón para eliminar el texto -->
+      <button id="delete-btn">Eliminar</button>
+    </div>
   </div>
 
   <script type="text/javascript" src="segment-display.js"></script>
   <script>
-    // Inicialización del display
-    const display = new SegmentDisplay("clock");
+    // Inicialización del primer display
+    const display1 = new SegmentDisplay("clock1");
+    const display2 = new SegmentDisplay("clock2");
     let currentSegmentType = 7;
 
     // Configuraciones iniciales
-    function initDisplay() {
+    function initDisplay(display, canvasId) {
       display.pattern = "##:##:##";
       display.displayAngle = 6;
       display.digitHeight = parseFloat(document.getElementById('digitHeightRange').value);
@@ -176,13 +99,13 @@
       display.colorOff = document.getElementById('colorOff').value;
 
       // Cambiar color de fondo
-      document.getElementById('clock').style.backgroundColor = document.getElementById('bgColor').value;
+      document.getElementById(canvasId).style.backgroundColor = document.getElementById('bgColor').value;
 
       display.draw();
     }
 
     // Actualización de valores
-    function updateDisplay() {
+    function updateDisplay(display, timeElementId) {
       const colombiaTime = new Intl.DateTimeFormat('es-CO', {
         timeZone: 'America/Bogota',
         hour: '2-digit',
@@ -190,7 +113,7 @@
         second: '2-digit'
       }).format(new Date());
 
-      document.getElementById('current-time').textContent = colombiaTime;
+      document.getElementById(timeElementId).textContent = colombiaTime;
 
       const [hours, minutes, seconds] = colombiaTime.split(':');
       const value = `${hours}:${minutes}:${seconds}`;
@@ -200,47 +123,62 @@
     // Listeners para los sliders
     document.getElementById('digitHeightRange').addEventListener('input', (e) => {
       document.getElementById('digitHeightValue').textContent = e.target.value;
-      display.digitHeight = parseFloat(e.target.value);
-      display.draw();
+      display1.digitHeight = parseFloat(e.target.value);
+      display2.digitHeight = parseFloat(e.target.value);
+      display1.draw();
+      display2.draw();
     });
 
     document.getElementById('digitWidthRange').addEventListener('input', (e) => {
       document.getElementById('digitWidthValue').textContent = e.target.value;
-      display.digitWidth = parseFloat(e.target.value);
-      display.draw();
+      display1.digitWidth = parseFloat(e.target.value);
+      display2.digitWidth = parseFloat(e.target.value);
+      display1.draw();
+      display2.draw();
     });
 
     document.getElementById('digitDistanceRange').addEventListener('input', (e) => {
       document.getElementById('digitDistanceValue').textContent = e.target.value;
-      display.digitDistance = parseFloat(e.target.value);
-      display.draw();
+      display1.digitDistance = parseFloat(e.target.value);
+      display2.digitDistance = parseFloat(e.target.value);
+      display1.draw();
+      display2.draw();
     });
 
     document.getElementById('segmentWidthRange').addEventListener('input', (e) => {
       document.getElementById('segmentWidthValue').textContent = e.target.value;
-      display.segmentWidth = parseFloat(e.target.value);
-      display.draw();
+      display1.segmentWidth = parseFloat(e.target.value);
+      display2.segmentWidth = parseFloat(e.target.value);
+      display1.draw();
+      display2.draw();
     });
 
     document.getElementById('segmentDistanceRange').addEventListener('input', (e) => {
       document.getElementById('segmentDistanceValue').textContent = e.target.value;
-      display.segmentDistance = parseFloat(e.target.value);
-      display.draw();
+      display1.segmentDistance = parseFloat(e.target.value);
+      display2.segmentDistance = parseFloat(e.target.value);
+      display1.draw();
+      display2.draw();
     });
 
     // Listeners para los colores
     document.getElementById('colorOn').addEventListener('input', () => {
-      display.colorOn = document.getElementById('colorOn').value;
-      display.draw();
+      display1.colorOn = document.getElementById('colorOn').value;
+      display2.colorOn = document.getElementById('colorOn').value;
+      display1.draw();
+      display2.draw();
     });
 
     document.getElementById('colorOff').addEventListener('input', () => {
-      display.colorOff = document.getElementById('colorOff').value;
-      display.draw();
+      display1.colorOff = document.getElementById('colorOff').value;
+      display2.colorOff = document.getElementById('colorOff').value;
+      display1.draw();
+      display2.draw();
     });
 
     document.getElementById('bgColor').addEventListener('input', () => {
-      document.getElementById('clock').style.backgroundColor = document.getElementById('bgColor').value;
+      document.getElementById('clock1').style.backgroundColor = document.getElementById('bgColor').value;
+      document.getElementById('clock2').style.backgroundColor = document.getElementById('bgColor').value;
     });
 
     // Botón de restablecer valores
@@ -252,75 +190,18 @@
       document.getElementById('segmentDistanceRange').value = 0.3;
       document.getElementById('colorOn').value = "#e95d0f";
       document.getElementById('colorOff').value = "#4b1e05";
-      document.getElementById('bgColor').value = "#ffffff";
+      document.getElementById('bgColor').value = "#000000";
 
-      initDisplay();
+      initDisplay(display1, 'clock1');
+      initDisplay(display2, 'clock2');
     });
 
-    // Botón para cambiar tipo de segmentos
-    document.getElementById('toggle-btn').addEventListener('click', () => {
-      currentSegmentType = (currentSegmentType === 7) ? 14 : 7;
-      display.segmentCount = currentSegmentType;
-      display.draw();
-    });
-
-    // Funcionalidad para enviar texto y crear tarjetas
-    document.getElementById('send-btn').addEventListener('click', () => {
-      const text = document.getElementById('card-textarea').value;
-      if (text) {
-        createCard(text);
-        document.getElementById('card-textarea').value = ''; // Limpiar el textarea
-      }
-    });
-
-    // Crear una tarjeta en el canvas
-    function createCard(text) {
-      const card = document.createElement('div');
-      card.className = 'movable-card';
-      card.innerText = text;
-      document.body.appendChild(card);
-
-      // Posicionamiento inicial
-      card.style.left = Math.random() * (window.innerWidth - 300) + 'px'; // Posición aleatoria en X
-      card.style.top = Math.random() * (window.innerHeight - 200) + 'px'; // Posición aleatoria en Y
-
-      // Hacer que la tarjeta sea arrastrable
-      card.onmousedown = function (event) {
-        let shiftX = event.clientX - card.getBoundingClientRect().left;
-        let shiftY = event.clientY - card.getBoundingClientRect().top;
-
-        function moveAt(pageX, pageY) {
-          card.style.left = pageX - shiftX + 'px';
-          card.style.top = pageY - shiftY + 'px';
-        }
-
-        function onMouseMove(event) {
-          moveAt(event.pageX, event.pageY);
-        }
-
-        document.addEventListener('mousemove', onMouseMove);
-
-        card.onmouseup = function () {
-          document.removeEventListener('mousemove', onMouseMove);
-          card.onmouseup = null;
-        };
-      };
-
-      card.ondragstart = function () {
-        return false; // Evitar el comportamiento de arrastre predeterminado
-      };
-    }
-
-    // Botón de eliminar (puede ser implementado si es necesario)
-    document.getElementById('delete-btn').addEventListener('click', () => {
-      const cards = document.querySelectorAll('.movable-card');
-      cards.forEach(card => card.remove());
-    });
-
-    // Inicializar y actualizar reloj
-    initDisplay();
+    // Inicializar y actualizar ambos relojes
+    initDisplay(display1, 'clock1');
+    initDisplay(display2, 'clock2');
     setInterval(() => {
-      updateDisplay();
+      updateDisplay(display1, 'current-time-1');
+      updateDisplay(display2, 'current-time-2');
     }, 1000);
   </script>
 </body>
