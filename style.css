@@ -142,3 +142,30 @@ button#delete-btn {
 button#delete-btn:hover {
     background-color: #c82333;
 }
+
+#segmentType {
+    margin: 10px;
+    padding: 8px 12px;
+    font-size: 16px;
+    border: 2px solid #e95d0f;
+    border-radius: 5px;
+    /* background-color: #1c1c1c; */
+    color: #000;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+#segmentType:hover {
+    /* background-color: #2e2e2e; */
+    border-color: #f77b42;
+}
+
+#segmentType:focus {
+    border-color: #f95c26;
+}
+
+#segmentType option {
+    /* background-color: #1c1c1c; */
+    color: #000;
+}

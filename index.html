@@ -11,6 +11,13 @@
 <body>
   <div class="card">
     <h3>Configuración de Geometría</h3>
+    <label for="segmentType">Tipo de Segmento:</label>
+    <select id="segmentType">
+      <option value="7">7 Segmentos</option>
+      <option value="14">14 Segmentos</option>
+      <option value="16">16 Segmentos</option>
+    </select>
+
     <label for="digitHeightRange">Altura del dígito: <span id="digitHeightValue">20</span></label>
     <input type="range" id="digitHeightRange" min="10" max="50" value="20">
 
@@ -129,8 +136,8 @@
       document.getElementById('card-textarea').value = ''; // Limpiar textarea
     });
 
-     // Evento de click para eliminar el mensaje
-     document.getElementById('delete-btn').addEventListener('click', () => {
+    // Evento de click para eliminar el mensaje
+    document.getElementById('delete-btn').addEventListener('click', () => {
       currentMessage = ''; // Limpiar el mensaje
     });
 
@@ -174,6 +181,14 @@
       display1.draw();
       display2.draw();
     });
+
+    //Funcionalidad para cambiar los tipos  de segmentos
+    document.getElementById('segmentType').addEventListener('change', (e) => {
+      currentSegmentType = parseInt(e.target.value); // Actualiza el tipo de segmento
+      initDisplay(display1, 'clock1');
+      initDisplay(display2, 'clock2');
+    });
+
 
     document.getElementById('colorOn').addEventListener('input', () => {
       display1.colorOn = document.getElementById('colorOn').value;
