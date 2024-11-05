@@ -47,18 +47,37 @@
       <button id="reset-btn">Restablecer valores</button>
       <button id="toggle-btn">Cambiar tipo</button>
     </div>
+
+     <!-- Selección de modo de display y patrón -->
+     <div class="display-mode">
+      <h3>Modo de Display</h3>
+      <select id="displayMode">
+        <option value="clock">Clock</option>
+        <option value="counter">Counter with decimal</option>
+        <option value="ticker">Ticker</option>
+        <option value="userFormat">User Format</option>
+      </select>
+  
+      <label for="displayPattern">Patrón:</label>
+      <input type="text" id="displayPattern" value="##:##:##">
+      
+      <label for="displayValue">Valor:</label>
+      <input type="text" id="displayValue" value="11:58:22">
+
+    </div>
   </div>
+   
+
 
   <div class="clock-container">
-    <!-- Aumentar el tamaño del canvas -->
-    <canvas id="clock1" width="350" height="200">Lamentablemente su navegador no es compatible.</canvas>
-    <!-- <p>Hora local de Colombia: <span id="current-time-1">--:--:--</span></p> -->
-  </div>
-
-  <div class="clock-container">
-    <canvas id="clock2" width="350" height="200">Lamentablemente su navegador no es compatible.</canvas>
+    <canvas id="clock2" width="350" height="400">Lamentablemente su navegador no es compatible.</canvas>
     <!-- <p>Hora local de Colombia: <span id="current-time-2">--:--:--</span></p> -->
   </div>
+
+  <div class="text-display-container">
+    <canvas id="textDisplay" width="350" height="400"></canvas>
+  </div>
+
 
   <div class="card-message">
     <h2 class="title-card">Ingrese el texto que desea imprimir</h2>
@@ -69,181 +88,9 @@
     </div>
   </div>
 
+ 
   <script type="text/javascript" src="segment-display.js"></script>
-  <script>
-    // Inicialización del primer display
-    const display1 = new SegmentDisplay("clock1");
-    const display2 = new SegmentDisplay("clock2");
-    let currentSegmentType = 7;
-    let currentMessage = ''; // Guarda el mensaje actual
-
-    // Función de inicialización del display
-    function initDisplay(display, canvasId) {
-      console.log(`Inicializando display en ${canvasId}`);
-      display.pattern = "##:##:##";
-      display.displayAngle = 6;
-      display.digitHeight = parseFloat(document.getElementById('digitHeightRange').value);
-      display.digitWidth = parseFloat(document.getElementById('digitWidthRange').value);
-      display.digitDistance = parseFloat(document.getElementById('digitDistanceRange').value);
-      display.segmentWidth = parseFloat(document.getElementById('segmentWidthRange').value);
-      display.segmentDistance = parseFloat(document.getElementById('segmentDistanceRange').value);
-      display.segmentCount = currentSegmentType;
-      display.cornerType = 3;
-
-      display.colorOn = document.getElementById('colorOn').value;
-      display.colorOff = document.getElementById('colorOff').value;
-
-      document.getElementById(canvasId).style.backgroundColor = document.getElementById('bgColor').value;
-
-      display.draw();
-    }
-
-    // Dibujar el reloj y el mensaje al mismo tiempo
-    function drawClockAndMessage() {
-      const canvas = document.getElementById('clock2');
-      const ctx = canvas.getContext('2d');
-
-      // Limpiar el canvas
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Dibujar el reloj (utilizando el SegmentDisplay)
-      const colombiaTime = new Intl.DateTimeFormat('es-CO', {
-        timeZone: 'America/Bogota',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-      }).format(new Date());
-
-      const [hours, minutes, seconds] = colombiaTime.split(':');
-      const value = `${hours}:${minutes}:${seconds}`;
-      display2.setValue(value);
-      display2.draw();
-
-      // Dibujar el mensaje debajo del reloj
-      ctx.fillStyle = 'white';
-      ctx.font = '16px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText(currentMessage, canvas.width / 2, canvas.height - 20); // Posición debajo del reloj
-    }
-
-    document.getElementById('send-btn').addEventListener('click', () => {
-      const message = document.getElementById('card-textarea').value.trim();
-      if (message === '') {
-        alert('Por favor, ingresa un mensaje.');
-        return;
-      }
-      currentMessage = message; // Asignar mensaje
-      document.getElementById('card-textarea').value = ''; // Limpiar textarea
-    });
-
-    // Evento de click para eliminar el mensaje
-    document.getElementById('delete-btn').addEventListener('click', () => {
-      currentMessage = ''; // Limpiar el mensaje
-    });
-
-    // Listeners para los sliders
-    document.getElementById('digitHeightRange').addEventListener('input', (e) => {
-      document.getElementById('digitHeightValue').textContent = e.target.value;
-      display1.digitHeight = parseFloat(e.target.value);
-      display2.digitHeight = parseFloat(e.target.value);
-      display1.draw();
-      display2.draw();
-    });
-
-    document.getElementById('digitWidthRange').addEventListener('input', (e) => {
-      document.getElementById('digitWidthValue').textContent = e.target.value;
-      display1.digitWidth = parseFloat(e.target.value);
-      display2.digitWidth = parseFloat(e.target.value);
-      display1.draw();
-      display2.draw();
-    });
-
-    document.getElementById('digitDistanceRange').addEventListener('input', (e) => {
-      document.getElementById('digitDistanceValue').textContent = e.target.value;
-      display1.digitDistance = parseFloat(e.target.value);
-      display2.digitDistance = parseFloat(e.target.value);
-      display1.draw();
-      display2.draw();
-    });
-
-    document.getElementById('segmentWidthRange').addEventListener('input', (e) => {
-      document.getElementById('segmentWidthValue').textContent = e.target.value;
-      display1.segmentWidth = parseFloat(e.target.value);
-      display2.segmentWidth = parseFloat(e.target.value);
-      display1.draw();
-      display2.draw();
-    });
-
-    document.getElementById('segmentDistanceRange').addEventListener('input', (e) => {
-      document.getElementById('segmentDistanceValue').textContent = e.target.value;
-      display1.segmentDistance = parseFloat(e.target.value);
-      display2.segmentDistance = parseFloat(e.target.value);
-      display1.draw();
-      display2.draw();
-    });
-
-    //Funcionalidad para cambiar los tipos  de segmentos
-    document.getElementById('segmentType').addEventListener('change', (e) => {
-      currentSegmentType = parseInt(e.target.value); // Actualiza el tipo de segmento
-      initDisplay(display1, 'clock1');
-      initDisplay(display2, 'clock2');
-    });
-
-
-    document.getElementById('colorOn').addEventListener('input', () => {
-      display1.colorOn = document.getElementById('colorOn').value;
-      display2.colorOn = document.getElementById('colorOn').value;
-      display1.draw();
-      display2.draw();
-    });
-
-    document.getElementById('colorOff').addEventListener('input', () => {
-      display1.colorOff = document.getElementById('colorOff').value;
-      display2.colorOff = document.getElementById('colorOff').value;
-      display1.draw();
-      display2.draw();
-    });
-
-    document.getElementById('bgColor').addEventListener('input', () => {
-      const bgColor = document.getElementById('bgColor').value;
-      document.getElementById('clock1').style.backgroundColor = bgColor;
-      document.getElementById('clock2').style.backgroundColor = bgColor;
-    });
-
-    document.getElementById('reset-btn').addEventListener('click', () => {
-      document.getElementById('digitHeightRange').value = 20;
-      document.getElementById('digitWidthRange').value = 14;
-      document.getElementById('digitDistanceRange').value = 2.5;
-      document.getElementById('segmentWidthRange').value = 2;
-      document.getElementById('segmentDistanceRange').value = 0.3;
-      document.getElementById('colorOn').value = '#e95d0f';
-      document.getElementById('colorOff').value = '#4b1e05';
-      document.getElementById('bgColor').value = '#000000';
-
-      // Actualizar valores visuales
-      document.getElementById('digitHeightValue').textContent = 20;
-      document.getElementById('digitWidthValue').textContent = 14;
-      document.getElementById('digitDistanceValue').textContent = 2.5;
-      document.getElementById('segmentWidthValue').textContent = 2;
-      document.getElementById('segmentDistanceValue').textContent = 0.3;
-
-      // Inicializar displays nuevamente
-      initDisplay(display1, 'clock1');
-      initDisplay(display2, 'clock2');
-    });
-
-    // Bucle para actualizar la hora cada segundo
-    setInterval(() => {
-      updateDisplay(display1, 'current-time-1');
-      updateDisplay(display2, 'current-time-2');
-    }, 1000);
-
-    // Inicializa los displays
-    initDisplay(display1, 'clock1');
-    initDisplay(display2, 'clock2');
-
-    setInterval(drawClockAndMessage, 1000);
-  </script>
+  <script src="functions.js"></script>
 </body>
 
 </html>

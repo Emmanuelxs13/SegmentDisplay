@@ -84,6 +84,30 @@ p {
     align-items: center;
     justify-content: center;
     margin-bottom: 20px;
+    margin-right: 20px;
+    
+    /* Mantener el contenedor fijo en la pantalla */
+    position: fixed;
+    top: 20px; /* Ajusta según la posición deseada desde la parte superior */
+    right: 47rem; /* Ajusta según la posición deseada desde la parte derecha */
+}
+
+
+.text-display-container{
+    margin-right: 70px;
+
+    /* Mantener el contenedor fijo en la pantalla */
+    position: fixed;
+    top: 20px; /* Ajusta según la posición deseada desde la parte superior */
+    right: 21rem; /* Ajusta según la posición deseada desde la parte derecha */
+}
+
+.display-mode{
+    margin-top: 20px;
+}
+
+.display-mode label{
+    margin-top: 20px;
 }
 
 #current-time {
